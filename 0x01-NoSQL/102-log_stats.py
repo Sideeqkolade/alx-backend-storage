@@ -32,13 +32,21 @@ if __name__ == "__main__":
     print(f"{status_count} status check")
 
     # Get the top 10 most present IDs
-    top_ips = collection.aggregate(
+    print("IPs:")
+    request_logs = collection.aggregate(
         [
-            {"$group": {"_id": "$ip", "count": {"$sum": 1}}},
-            {"$sort": {"count": -1}},
-            {"$limit": 10}
+            {
+                '$group': {'_id': "$ip", 'totalRequests': {'$sum': 1}}
+            },
+            {
+                '$sort': {'totalRequests': -1}
+            },
+            {
+                '$limit': 10
+            },
         ]
     )
-    print("Top 10 IPs:")
-    for ip_data in top_ips:
-        print(f"\t{ip_data['_id']}: {ip_data['count']}")
+    for request_log in request_logs:
+        ip = request_log['_id']
+        ip_requests_count = request_log['totalRequests']
+        print('\t{}: {}'.format(ip, ip_requests_count))
