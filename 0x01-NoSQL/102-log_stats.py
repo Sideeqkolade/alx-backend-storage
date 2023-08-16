@@ -32,13 +32,13 @@ if __name__ == "__main__":
     print(f"{status_count} status check")
 
     # Get the top 10 most present IDs
-    pipeline = [
-        {"$group": {"_id": "$ip", "count": {"$sum": 1}}},
-        {"$sort": {"count": -1}},
-        {"$limit": 10}
-    ]
-    top_ips = list(collection.aggregate(pipeline))
-
+    top_ips = collection.aggregate(
+        [
+            {"$group": {"_id": "$ip", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}},
+            {"$limit": 10}
+        ]
+    )
     print("Top 10 IPs:")
     for ip_data in top_ips:
         print(f"\t{ip_data['_id']}: {ip_data['count']}")
